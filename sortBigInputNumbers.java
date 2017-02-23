@@ -1,3 +1,11 @@
+/*  Solution to Hackerrank challenge, Day 2 of Week 29. Easy Difficulty.
+    Big Sorting: Sorting input numbers far bigger than longs.
+    
+    Usage:  First input number is the amount of numbers to sort.
+            Subsequent input numbers are the numbers to sort.
+    Output: Sorted numbers printed, one on each line.
+*/
+
 import java.io.*;
 import java.util.*;
 import java.text.*;
