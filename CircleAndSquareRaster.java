@@ -9,6 +9,8 @@ public class Solution {
     static String [][] canvas;
     static int width;
     static int height;
+    static int minX;
+    static int minY;
     
     // Get rid of extra # for the rastered squares.
         // Idea:    1) do something for the points between x1 and x2, etc.
@@ -47,6 +49,16 @@ public class Solution {
         return;
     }
 
+    static boolean checkPerfectSquare(int x1, int y1, int x2, int y2){
+        if(y2-y1 != 0){
+            return true;
+        }
+        if(x2-x1 != 0){
+            return true;
+        }
+        return false;
+    }
+    
     static void removeSide(int x1, int y1, int x2, int y2, boolean posRun, boolean posRise){
         double gradx1x2 = (double)(y2-y1)/(x2-x1);
         if(!(posRun || posRise) || (!posRun &&posRise)){  //switch for negative on negative = positive gradient
@@ -78,7 +90,7 @@ public class Solution {
                             }
                         }
                         if((posRun && posRise)){
-                            if(gradx1x2 > pointGradient){
+                            if(gradx1x2 > pointGradient && !(i==y1 && j==x1)){
                                 canvas[i][j] = ".";
                             }
                         }else if (!(posRun ||posRise)){
@@ -86,7 +98,7 @@ public class Solution {
                                 canvas[i][j] = ".";
                             }
                         } else if (!posRun && posRise){
-                            if(gradx1x2 < pointGradient){
+                            if(gradx1x2 < pointGradient && !(i==y2 && j==x1) ){
                                 canvas[i][j] = ".";
                             }
                         }else if (posRun && !posRise){
@@ -98,7 +110,6 @@ public class Solution {
                 }
         return;
     }
-    
     
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
@@ -122,7 +133,6 @@ public class Solution {
             }
         }
         
-        
         // Add the Square
         // opposite corners defined, the position of adjacent corners are:
         // width-wise - height-wise = vertical distance to the other corners.
@@ -135,34 +145,42 @@ public class Solution {
         int y2 = 0;
         int y4 = 0;
         
-        if ((x1 >= x3 && y1 < y3) || (x1 < x3 && y1 >= y3)){
-            x4 = (x1+x3)/2 - (y3-y1)/2;
+        if ((x1 >= x3 && y1 < y3) ){
+            
+            x4 = (x1+x3)/2 -(y3-y1)/2;
             x2 = (x1+x3)/2 + (y3-y1)/2;
-        } else if ((x1 >= x3 && y1 >= y3) || (x1 < x3 && y1 < y3)){
+        } else if ((x1 >= x3 && y1 >= y3) ){
             x4 = (x1+x3)/2 + (y3-y1)/2; // middle sign different to above
             x2 = (x1+x3)/2 - (y3-y1)/2; // middle sign different to above
-        } 
+        } else if (x1 < x3 && y1 >= y3){
+            x4 = (x1+x3)/2 - (y3-y1)/2;
+            x2 = (x1+x3)/2 + (y3-y1)/2;
+        } else if(x1 < x3 && y1 < y3){
+            x4 = (x1+x3)/2 - (y3-y1)/2; 
+            x2 = (x1+x3)/2 + (y3-y1)/2;
+        }
         y2 = (y3+y1)/2 + (x1-x3)/2;
         y4 = (y3+y1)/2 - (x1-x3)/2;
-        
         // draw the square: Larger box version
         // Get mins and maxes to create biggest square
-        int left = Math.min(Math.min(x1,x2), Math.min(x3, x4));
-        int right = Math.max(Math.max(x1,x2), Math.max(x3,x4));
-        int top = Math.min(Math.min(y1,y2), Math.min(y3, y4));
-        int bottom = Math.max(Math.max(y1,y2), Math.max(y3,y4));
+        minX = Math.min(Math.min(x1,x2), Math.min(x3, x4));
+        int maxX = Math.max(Math.max(x1,x2), Math.max(x3,x4));
+        minY = Math.min(Math.min(y1,y2), Math.min(y3, y4));
+        int maxY = Math.max(Math.max(y1,y2), Math.max(y3,y4));
         //System.out.println(x1+ " " +x2+ " " +x3+ " "+x4+ " "+left+ " "+right);
-        for(int i = top; i<=bottom && i < h; i++){
-            for(int j = left; j<=right && j < w; j++){
+        for(int i = minY; i<=maxY && i < h; i++){
+            for(int j = minX; j<=maxX && j < w; j++){
                 canvas[i][j] = "#";
             }
         }
               
         // Line x1 to x2, etc:
-        deleteExtra(x1,y1, x2,y2);
-        deleteExtra(x4,y4, x1,y1);
-        deleteExtra(x3,y3, x4,y4);
-        deleteExtra(x2,y2, x3,y3);
+        if(checkPerfectSquare(x1,y1, x2, y2)){
+                deleteExtra(x1,y1, x2,y2);
+                deleteExtra(x4,y4, x1,y1);
+                deleteExtra(x3,y3, x4,y4);
+                deleteExtra(x2,y2, x3,y3);
+        }
         
         // Add the circle last
         double radius = r;
