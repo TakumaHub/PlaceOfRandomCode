@@ -73,8 +73,9 @@ public class Solution {
         }
 
         // We know x1 & y1 are the minimum values of the rectangle, x2 & y2 are the maximum.
-        for(int i = y1; i<=y2 && i<height; i++){
-                    for(int j = x1; j<=x2 && j<width; j++){
+        for(int i = y1; i<=y2; i++){
+                for(int j = x1; j<=x2; j++){
+                    if( i<height && i>=0 && j<width && j>=0){
                         double pointGradient = 0;
                         if(j-x1 != 0){
                             if((posRun && posRise)||!(posRun ||posRise)){
@@ -108,6 +109,7 @@ public class Solution {
                         }
                     }
                 }
+            }
         return;
     }
     
@@ -167,13 +169,14 @@ public class Solution {
         int maxX = Math.max(Math.max(x1,x2), Math.max(x3,x4));
         minY = Math.min(Math.min(y1,y2), Math.min(y3, y4));
         int maxY = Math.max(Math.max(y1,y2), Math.max(y3,y4));
-        //System.out.println(x1+ " " +x2+ " " +x3+ " "+x4+ " "+left+ " "+right);
-        for(int i = minY; i<=maxY && i < h; i++){
-            for(int j = minX; j<=maxX && j < w; j++){
-                canvas[i][j] = "#";
+        //System.out.println(x1+ " " +x2+ " " +x3+ " "+x4+ " "+minX+ " "+maxX);
+        for(int i = minY; i<=maxY; i++){
+            for(int j = minX; j<=maxX; j++){
+                if(i < h && i>=0  && j < w && j>=0)
+                    canvas[i][j] = "#";
             }
         }
-              
+             
         // Line x1 to x2, etc:
         if(checkPerfectSquare(x1,y1, x2, y2)){
                 deleteExtra(x1,y1, x2,y2);
@@ -184,14 +187,13 @@ public class Solution {
         
         // Add the circle last
         double radius = r;
-        for(int i = -r; i<=r; i++){
+        for(int i = -r; i<=r ; i++){
             for(int j = -r; j <= r; j++){
-                 if (circleX + i >= 0 && circleX < w && circleY + j >=0 && circleY < h){
                      //Additional condition: 
                      // if pixel's distance to centre is beyond radius, exclude pixel.
-                         
-                     if(Math.sqrt(i*i + j*j) <= radius){    // conpare to a doube, not an int
-                        canvas[circleY + j][circleX + i] = "#";
+                 if(Math.sqrt((i)*(i) + (j)*(j)) <= radius){    // conpare to a doube, not an int
+                     if (circleX + j >= 0 && circleX +j< w && circleY + i >=0 && circleY+i < h){
+                         canvas[circleY + i][circleX + j] = "#";
                      }
                  }
             }
