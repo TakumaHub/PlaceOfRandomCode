@@ -41,21 +41,14 @@ public class Solution {
             return;
         }
         
-        if(gradx1x2 > 0){
-            removeSide(x1,y1, x2,y2, run, rise);
-        }else if (gradx1x2 < 0){
-            System.out.println(" Bumming inside else if for ("+x1 +","+y1 +") and (" + x2+","+y2+")"+ run+rise);
-            
+        if(gradx1x2 != 0){
             removeSide(x1,y1, x2,y2, run, rise);
         }   // do nothing for x1 == x2 (grad == 0) as no changes to canvas are necessary.
-
         return;
     }
 
-    // function to reduce redundancy in code
     static void removeSide(int x1, int y1, int x2, int y2, boolean posRun, boolean posRise){
         double gradx1x2 = (double)(y2-y1)/(x2-x1);
-        System.out.println("The gradient: " + gradx1x2);
         if(!(posRun || posRise) || (!posRun &&posRise)){  //switch for negative on negative = positive gradient
             int temp = x1;
             x1 = x2;
@@ -66,9 +59,7 @@ public class Solution {
             y1 = y2;
             y2 = temp;
         }
-        if((!posRun && posRise)||(posRun && !posRise)){
-            System.out.println("Tester: ("+x1 +","+y1 +") and (" + x2+","+y2+")"+ posRun+posRise);
-        }
+
         // We know x1 & y1 are the minimum values of the rectangle, x2 & y2 are the maximum.
         for(int i = y1; i<=y2 && i<height; i++){
                     for(int j = x1; j<=x2 && j<width; j++){
@@ -88,20 +79,19 @@ public class Solution {
                         }
                         if((posRun && posRise)){
                             if(gradx1x2 > pointGradient){
-                                canvas[i][j] = "*";
+                                canvas[i][j] = ".";
                             }
                         }else if (!(posRun ||posRise)){
-                            if(gradx1x2 < pointGradient){
-                                canvas[i][j] = "*";
+                            if(gradx1x2 < pointGradient && !(i==y1 && j==x1) ){
+                                canvas[i][j] = ".";
                             }
                         } else if (!posRun && posRise){
                             if(gradx1x2 < pointGradient){
-                                System.out.println(pointGradient);
-                                canvas[i][j] = "y";
+                                canvas[i][j] = ".";
                             }
-                        }else{
-                            if(gradx1x2 > pointGradient){
-                                canvas[i][j] = "y";
+                        }else if (posRun && !posRise){
+                            if(gradx1x2 > pointGradient && !(i==y2 && j==x1) ){
+                                canvas[i][j] = ".";
                             }
                         }
                     }
@@ -168,20 +158,11 @@ public class Solution {
             }
         }
               
-        // Line x1 to x2:
+        // Line x1 to x2, etc:
         deleteExtra(x1,y1, x2,y2);
         deleteExtra(x4,y4, x1,y1);
         deleteExtra(x3,y3, x4,y4);
         deleteExtra(x2,y2, x3,y3);
-               
-        if(y1>= 0 && y1 < h && x1 >= 0 && x1 < w)
-            canvas[y1][x1] = "1";
-        if(y2>= 0 && y2 < h && x2 >= 0 && x2 < w)
-            canvas[y2][x2] = "2";
-        if(y3>= 0 && y3 < h && x3 >= 0 && x3 < w)
-            canvas[y3][x3] = "3";
-        if(y4>= 0 && y4 < h && x4 >= 0 && x4 < w)
-            canvas[y4][x4] = "4";
         
         // Add the circle last
         double radius = r;
